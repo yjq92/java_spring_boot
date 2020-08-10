@@ -11,6 +11,7 @@ public class TestSpringBootController {
 
     /**
      * 127.0.0.1:8080/test/testOne
+     * 测试框架搭建是否成功
      */
     @GetMapping("/testOne")
     @ResponseBody
