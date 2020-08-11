@@ -37,6 +37,13 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
+        <!--热部署配置-->
+        <!-- spring dev tools -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
