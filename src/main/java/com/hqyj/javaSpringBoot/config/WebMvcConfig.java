@@ -9,9 +9,6 @@ import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * 使用http以及端口号为80访问
- */
 @Configuration
 @AutoConfigureAfter(WebMvcAutoConfiguration.class)
 public class WebMvcConfig {
