@@ -1,5 +1,6 @@
 package com.hqyj.javaSpringBoot.modules.test.controller;
 
+import com.hqyj.javaSpringBoot.modules.test.vo.ApplicationTest;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
