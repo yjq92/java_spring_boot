@@ -1,7 +1,6 @@
 package com.hqyj.javaSpringBoot.modules.test.dao;
 
 import com.hqyj.javaSpringBoot.modules.test.entity.Country;
-
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
@@ -13,7 +12,6 @@ import java.util.List;
 @Repository
 @Mapper
 public interface CountryDao {
-    /*组合查询，获取Country以及其下面的城市信息*/
     @Select("select * from m_country where country_Id=#{countryId}")
     @Results(id="countryResults",value = {
             @Result(column = "country_id", property = "countryId"),
