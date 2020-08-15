@@ -69,12 +69,12 @@ public class StudentServiceImpl implements StudentService {
                 .orElse(Collections.emptyList());*/
 
 
-       if(cardId>0){
-           return studentRespository.getStudentsByParams(studentName,cardId);
-       } else {
+        if(cardId>0){
+            return studentRespository.getStudentsByParams(studentName,cardId);
+        } else {
             return Optional.ofNullable(studentRespository.findTop2ByStudentNameLike(
-                String.format("%s%S%s","%",studentName,"%")))
-                .orElse(Collections.emptyList());
-       }
+                    String.format("%s%S%s","%",studentName,"%")))
+                    .orElse(Collections.emptyList());
+        }
     }
 }
