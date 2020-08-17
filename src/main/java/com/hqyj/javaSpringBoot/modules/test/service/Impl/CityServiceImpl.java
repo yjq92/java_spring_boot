@@ -2,6 +2,7 @@ package com.hqyj.javaSpringBoot.modules.test.service.Impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hqyj.javaSpringBoot.aspect.ServiceAnnotation;
 import com.hqyj.javaSpringBoot.modules.common.vo.Result;
 import com.hqyj.javaSpringBoot.modules.common.vo.SearchVo;
 import com.hqyj.javaSpringBoot.modules.test.dao.CityDao;
@@ -22,6 +23,7 @@ public class CityServiceImpl implements CityService {
     private CityDao cityDao;
 
     @Override
+    @ServiceAnnotation(value = "qqqq")
     public List<City> getCitiesByCountryId(int countryId) {
 //        return cityService.getCitiesByCountryId(countryId);避免查到为空值
         return Optional.ofNullable(cityDao.getCitiesByCountryId(countryId)).orElse(Collections.emptyList());
@@ -58,7 +60,7 @@ public class CityServiceImpl implements CityService {
     @Transactional(noRollbackFor = ArithmeticException.class)
     public Result<City> updateCity(City city) {
         cityDao.updateCity(city);
-        int i = 1 / 0; //runtimeexception
+        //int i = 1 / 0; //runtimeexception
         return new Result<>(Result.ResultStaus.SUCCESS.status,
                 "update success.", city);
     }

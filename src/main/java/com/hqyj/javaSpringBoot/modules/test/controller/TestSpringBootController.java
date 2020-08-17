@@ -9,13 +9,16 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Description;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.jws.WebParam;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -122,8 +125,10 @@ public class TestSpringBootController {
     }
 
     /**
+     *
      * 127.0.0.1/test/index1
      */
+
     @GetMapping("/index1")
     public String indexpage1(){
         return "test/indexpage1";
@@ -133,14 +138,14 @@ public class TestSpringBootController {
      */
     @GetMapping("/index2")
     public String indexpage2(ModelMap modelMap) {
-        modelMap.addAttribute("template", "test/indexpage2");
+        modelMap.addAttribute("template", "test/index2");
         return "index";
     }
 
     /**
-     *127.0.0.1/test/testindex
+     *127.0.0.1/test/index
      */
-    @GetMapping("/testindex")
+    @GetMapping("/index")
     public String testIndexPage(ModelMap modelMap) {
         int countryId = 522;
         List<City> cities = cityService.getCitiesByCountryId(countryId);
@@ -159,10 +164,20 @@ public class TestSpringBootController {
                 "/upload/11111.png");
         modelMap.addAttribute("country", country);
         modelMap.addAttribute("cities", cities);
-        modelMap.addAttribute("updateCityUri", "/api/city");
-        modelMap.addAttribute("template", "test/indexpage2");
+        modelMap.addAttribute("updateCityUri", "/api/updateCity");
+        //modelMap.addAttribute("template", "test/index");
         // 返回外层的碎片组装器
         return "index";
+    }
+
+    /**
+     * 127.0.0.1/test/testDec?paramKey=fuck
+     */
+    @GetMapping("/testDec")
+    @ResponseBody
+    public String testDec(HttpServletRequest request, @RequestParam(value = "paramKey") String paramValue){
+        String paramValue2=request.getParameter("paramKey");
+        return "This is test module desc." + paramValue + "==" + paramValue2;
     }
 
 

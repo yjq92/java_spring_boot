@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -12,15 +12,14 @@
     <!-- <link th:href="${'/css/sbDemo.css'}" rel="stylesheet" /> -->
 </head>
 <body>
-njnsuusuc
 <!--引入header.html-->
 <div th:replace="fragments/header"></div>
 <!--引入sidebar.html-->
 <div th:replace="fragments/sidebar"></div>
 <!-- body content -->
-  <div th:if="${template}">
-      <div th:replace="${template}"></div>
-  </div>
+<div th:if="${template}">
+    <div th:replace="${template}"></div>
+</div>
 <!--引入footer.html-->
 <div th:replace="fragments/footer::footer"></div>
 </body>
