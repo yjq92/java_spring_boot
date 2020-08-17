@@ -65,7 +65,7 @@ public class StudentServiceImpl implements StudentService {
                                                      .orElse(Collections.emptyList());
 */
         /*return Optional.ofNullable(studentRespository.findByStudentNameLike(
-                String.format("%s%S%s","%",studentName,"%")))
+                String.format("%s%s%s","%",studentName,"%")))
                 .orElse(Collections.emptyList());*/
 
 
@@ -73,7 +73,7 @@ public class StudentServiceImpl implements StudentService {
             return studentRespository.getStudentsByParams(studentName,cardId);
         } else {
             return Optional.ofNullable(studentRespository.findTop2ByStudentNameLike(
-                    String.format("%s%S%s","%",studentName,"%")))
+                    String.format("%s%s%s","%",studentName,"%")))
                     .orElse(Collections.emptyList());
         }
     }
