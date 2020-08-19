@@ -244,7 +244,7 @@ public class TestSpringBootController {
             resource=new UrlResource(Paths.get("E:\\upload\\"+fileName).toUri());
             if(resource.exists()&&resource.isReadable()){
                 return ResponseEntity.ok()
-                                     .header(HttpHeaders.CONTENT_TYPE,"application/octet-stream")
+                        .header(HttpHeaders.CONTENT_TYPE,"application/octet-stream")
                         .header(HttpHeaders.CONTENT_DISPOSITION,
                                 String.format("attachment; filename=\"%s\"", resource.getFilename()))
                         .body(resource);
