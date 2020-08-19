@@ -16,7 +16,7 @@
 <div th:replace="fragments/header"></div>
 <!--引入sidebar.html-->
 <div th:replace="fragments/sidebar"></div>
-<!-- body content -->
+<!-- body content  template 不同页面的路径-->
 <div th:if="${template}">
     <div th:replace="${template}"></div>
 </div>

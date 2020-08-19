@@ -5,20 +5,26 @@ import com.hqyj.javaSpringBoot.modules.test.entity.Country;
 import com.hqyj.javaSpringBoot.modules.test.service.CityService;
 import com.hqyj.javaSpringBoot.modules.test.service.CountryService;
 import com.hqyj.javaSpringBoot.modules.test.vo.ApplicationTest;
-import org.slf4j.LoggerFactory;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Description;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.jws.WebParam;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.net.MalformedURLException;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,7 +35,7 @@ public class TestSpringBootController {
 
     @GetMapping("/logTest")
     @ResponseBody
-    public String logTest(){
+    public String logTest() {
         LOGGER.trace("This is trace log");
         LOGGER.debug("This is debug log");
         LOGGER.info("This is info log");
@@ -46,7 +52,7 @@ public class TestSpringBootController {
      */
     @GetMapping("/testOne")
     @ResponseBody
-    public String testOne(){
+    public String testOne() {
         return "Test SpringBoot Successfully!";
     }
 
@@ -105,19 +111,20 @@ public class TestSpringBootController {
      */
     @GetMapping("/configTest")
     @ResponseBody
-    public String configTest(){
+    public String configTest() {
         return new StringBuffer().append(name).append("-----")
                 .append(age).append("--------")
                 .append(desc).append("------")
                 .append(random).append("------").toString();
     }
+
     /**
      * 127.0.0.1:8080/test/configTest2
      */
     @GetMapping("/configTest2")
     @ResponseBody
-    public String configTest2(){
-        StringBuffer s1=new StringBuffer();
+    public String configTest2() {
+        StringBuffer s1 = new StringBuffer();
         return s1.append(applicationTest.getName()).append("-----")
                 .append(applicationTest.getAge()).append("--------")
                 .append(applicationTest.getDesc()).append("------")
@@ -125,14 +132,14 @@ public class TestSpringBootController {
     }
 
     /**
-     *
      * 127.0.0.1/test/index1
      */
 
     @GetMapping("/index1")
-    public String indexpage1(){
+    public String indexpage1() {
         return "test/indexpage1";
     }
+
     /**
      * 127.0.0.1/test/index2
      */
@@ -143,7 +150,7 @@ public class TestSpringBootController {
     }
 
     /**
-     *127.0.0.1/test/index
+     * 127.0.0.1/test/index
      */
     @GetMapping("/index")
     public String testIndexPage(ModelMap modelMap) {
@@ -175,9 +182,77 @@ public class TestSpringBootController {
      */
     @GetMapping("/testDec")
     @ResponseBody
-    public String testDec(HttpServletRequest request, @RequestParam(value = "paramKey") String paramValue){
-        String paramValue2=request.getParameter("paramKey");
+    public String testDec(HttpServletRequest request, @RequestParam(value = "paramKey") String paramValue) {
+        String paramValue2 = request.getParameter("paramKey");
         return "This is test module desc." + paramValue + "==" + paramValue2;
+    }
+
+    /**
+     * 127.0.0.1/test/file
+     */
+    @PostMapping(value = "/file", consumes = "multipart/form-data")
+    public String uploadFile(@RequestParam MultipartFile file, RedirectAttributes redirectAttributes) {
+        if (file.isEmpty()) {
+            redirectAttributes.addFlashAttribute("message", "please select file");
+            return "redirect:/test/index";
+        }
+        try {
+            String objectFilePath = "E:\\upload\\" + file.getOriginalFilename();//上传之后保存文件的地址
+            File objectFile = new File(objectFilePath);
+            file.transferTo(objectFile);
+            redirectAttributes.addFlashAttribute("message", "upload file success");
+        } catch (IOException e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("message", "upload file failed");
+
+        }
+        return "redirect:/test/index";
+    }
+
+    /**
+     * 127.0.0.1/test/files
+     */
+    @PostMapping(value = "/files", consumes = "multipart/form-data")//弊端，不能同时点击多个文件，直接上传，改进
+    public String uploadFiles(@RequestParam MultipartFile[] files, RedirectAttributes redirectAttributes) {
+        boolean empty=true;
+        try {
+            for (MultipartFile file : files) {
+                if(file.isEmpty()){
+                    continue;
+                }
+                String objectFilePath = "E:\\upload\\" + file.getOriginalFilename();//上传之后保存文件的地址
+                File objectFile = new File(objectFilePath);
+                file.transferTo(objectFile);
+                empty=false;
+            }
+            if(empty){
+                redirectAttributes.addFlashAttribute("message", "please select files");
+            }else {
+                redirectAttributes.addFlashAttribute("message", "upload files success");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("message", "upload files failed");
+        }
+        return "redirect:/test/index";
+    }
+
+    @GetMapping("/file")
+    public ResponseEntity<Resource> downloadFile(@RequestParam String fileName){
+        Resource resource=null;
+        try {
+            resource=new UrlResource(Paths.get("E:\\upload\\"+fileName).toUri());
+            if(resource.exists()&&resource.isReadable()){
+                return ResponseEntity.ok()
+                                     .header(HttpHeaders.CONTENT_TYPE,"application/octet-stream")
+                        .header(HttpHeaders.CONTENT_DISPOSITION,
+                                String.format("attachment; filename=\"%s\"", resource.getFilename()))
+                        .body(resource);
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 

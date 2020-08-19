@@ -2,29 +2,31 @@ package com.hqyj.javaSpringBoot.aspect;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.After;
-import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Before;
-import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 
+@Aspect
+@Component
 public class ControllerAspect {
     private final static Logger LOGGER = LoggerFactory.getLogger(ControllerAspect.class);
 
-    @Pointcut("execution(public * com.hqyj.javaSpringBoot.modules.*.controller.*.*(..)")
+    @Pointcut("execution(public * com.hqyj.javaSpringBoot.modules.*.controller.*.*(..))") //切点 controllerPointCut，
     @Order(1)
     public void controllerPointCut() {
     }
 
+    //将通知方法与切片进行绑定，访问控制器时，调用通知方法，实现业务逻辑的增强
     @Before(value = "com.hqyj.javaSpringBoot.aspect.ControllerAspect.controllerPointCut()")
     public void beforeController(JoinPoint joinPoint) {
+        //需求：打印request相关日志信息
         LOGGER.debug("====== this is before controller =====");
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
