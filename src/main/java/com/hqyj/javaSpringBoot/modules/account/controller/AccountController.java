@@ -14,4 +14,19 @@ public class AccountController {
     public String usersPage(){
         return "index";
     }
+
+    /**
+     * 127.0.0.1/account/login
+     */
+    @GetMapping("/login")
+    public String loginPage(){
+        return "indexSimple";
+    }
+    /**
+     * 127.0.0.1/account/register
+     */
+    @GetMapping("/register")
+    public String registerPage(){
+        return "indexSimple";
+    }
 }
