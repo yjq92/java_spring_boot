@@ -256,12 +256,4 @@ public class TestSpringBootController {
     }
 
 
-    /**
-     * 127.0.0.1/test/indexSimple ---- get
-     */
-    @GetMapping("/indexSimple")
-    public String indexSimpleTestPage() {
-        return "indexSimple";
-    }
-
 }
