@@ -2,10 +2,7 @@ package com.hqyj.javaSpringBoot.modules.account.dao;
 
 import com.hqyj.javaSpringBoot.modules.account.entity.User;
 import com.hqyj.javaSpringBoot.modules.common.vo.SearchVo;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Options;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -13,9 +10,9 @@ import java.util.List;
 @Repository
 @Mapper
 public interface UserDao {
-    @Insert("insert into user (user_name,password,user_img,create_date)"+
+    @Insert("insert into user (user_name,password,user_img,create_date)" +
             "values (#{userName},#{password},#{userImg},#{createDate})")
-    @Options(useGeneratedKeys = true,keyColumn = "user_id",keyProperty = "userId")
+    @Options(useGeneratedKeys = true, keyColumn = "user_id", keyProperty = "userId")
     void insertUser(User user);
 
     @Select("select * from user where user_name=#{userName}")
@@ -38,4 +35,19 @@ public interface UserDao {
             + "</choose>"
             + "</script>")
     List<User> getUsersBySearchVo(SearchVo searchVo);
+
+    @Update("update user set user_name=#{userName},user_img=#{userImg} where user_id=#{userId}")
+    void updateUser(User user);
+
+    @Delete("delete from user where user_id=#{userId}")
+    void deleteUser(int userId);
+
+    @Select("select * from user where user_id=#{userId}")
+    @Results(id = "userResults", value = {
+            @Result(column = "user_id", property = "userId"),
+            @Result(column = "user_id", property = "roles", javaType = List.class,
+                    many = @Many(select = "com.hqyj.javaSpringBoot.modules.account.dao.RoleDao.getRolesByUserId"))}
+    )
+    User getUserByUserId(int userId);
+
 }
