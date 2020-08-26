@@ -10,6 +10,10 @@ import com.hqyj.javaSpringBoot.modules.account.service.UserService;
 import com.hqyj.javaSpringBoot.modules.common.vo.Result;
 import com.hqyj.javaSpringBoot.modules.common.vo.SearchVo;
 import com.hqyj.javaSpringBoot.utils.MD5Util;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,13 +49,28 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Result<User> login(User user) {
-        User userTemp = userDao.getUserByUserName(user.getUserName());
+        Subject subject = SecurityUtils.getSubject();
+        //令牌    usernamePasswordToken
+        UsernamePasswordToken usernamePasswordToken=new UsernamePasswordToken(user.getUserName(),MD5Util.getMD5(user.getPassword()));
+        usernamePasswordToken.setRememberMe(user.getRememberMe());
+        try{
+            subject.login(usernamePasswordToken);
+            subject.checkRoles();
+        }catch (Exception e){
+            e.printStackTrace();
+            return new Result<User>(Result.ResultStaus.FAILD.status,"userName or password is error");
+        }
+        Session session =subject.getSession();
+        session.setAttribute("user",(User)subject.getPrincipal());
+        return new Result<User>(Result.ResultStaus.SUCCESS.status,"Login success",user);
+
+        /*User userTemp = userDao.getUserByUserName(user.getUserName());
         if (userTemp != null
                 && userTemp.getPassword().equals(MD5Util.getMD5(user.getPassword()))) {
             return new Result<User>(Result.ResultStaus.SUCCESS.status, "Login success", userTemp);
         }
-        return new Result<User>(Result.ResultStaus.FAILD.status, "UserName or password is error", userTemp);
-    }
+        return new Result<User>(Result.ResultStaus.FAILD.status, "UserName or password is error", userTemp);*/
+}
 
     @Override
     public PageInfo<User> getUsersBySearchVo(SearchVo searchVo) {
@@ -129,6 +148,19 @@ public class UserServiceImpl implements UserService {
         userDao.updateUser(user);
 
         return new Result<User>(Result.ResultStaus.SUCCESS.status, "Edit success.", user);
+    }
+
+    @Override
+    public User getUserByUserName(String userName) {
+        return userDao.getUserByUserName(userName);
+    }
+
+    @Override
+    public void logout() {
+        Subject subject=SecurityUtils.getSubject();
+        subject.logout();
+        Session session=subject.getSession();
+        session.setAttribute("user",null);
     }
 
 }

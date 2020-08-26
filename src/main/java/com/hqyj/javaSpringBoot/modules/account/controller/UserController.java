@@ -8,6 +8,7 @@ import com.hqyj.javaSpringBoot.modules.common.vo.SearchVo;
 import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -87,4 +88,6 @@ public class UserController {
     public Result<User> updateUserProfile(@RequestBody User user) {
         return userService.updateUserProfile(user);
     }
+
+
 }

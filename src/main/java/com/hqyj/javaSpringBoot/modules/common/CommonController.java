@@ -1,4 +1,4 @@
-package com.hqyj.javaSpringBoot.modules.account.controller;
+package com.hqyj.javaSpringBoot.modules.common;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +13,13 @@ public class CommonController {
      */
     @GetMapping("/dashboard")
     public String dashboardPage(){
+        return "index";
+    }
+    /**
+     * 127.0.0.1/common/dashboard2 ---- get
+     */
+    @GetMapping("/dashboard2")
+    public String dashboard2Page() {
         return "index";
     }
 }
