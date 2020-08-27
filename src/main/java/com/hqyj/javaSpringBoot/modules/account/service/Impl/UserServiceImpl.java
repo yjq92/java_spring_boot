@@ -5,6 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.hqyj.javaSpringBoot.config.ResourceConfigBean;
 import com.hqyj.javaSpringBoot.modules.account.dao.UserDao;
 import com.hqyj.javaSpringBoot.modules.account.dao.UserRoleDao;
+import com.hqyj.javaSpringBoot.modules.account.entity.Role;
 import com.hqyj.javaSpringBoot.modules.account.entity.User;
 import com.hqyj.javaSpringBoot.modules.account.service.UserService;
 import com.hqyj.javaSpringBoot.modules.common.vo.Result;
@@ -23,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -44,6 +46,15 @@ public class UserServiceImpl implements UserService {
         user.setCreateDate(LocalDateTime.now());
         user.setPassword(MD5Util.getMD5(user.getPassword()));
         userDao.insertUser(user);
+
+        userRoleDao.deleteUserRoleByUserId(user.getUserId());
+        List<Role> roles = user.getRoles();
+        System.out.println(roles);
+        if (roles != null && !roles.isEmpty()) {
+            roles.stream().forEach(item -> {
+                userRoleDao.addUserRole(user.getUserId(), item.getRoleId());
+            });
+        }
         return new Result<User>(Result.ResultStaus.SUCCESS.status, "Insert user success.", user);
     }
 
