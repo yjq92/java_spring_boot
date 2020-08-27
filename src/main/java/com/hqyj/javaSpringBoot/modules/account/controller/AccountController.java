@@ -27,7 +27,7 @@ public class AccountController {
     public String logout(ModelMap modelMap){
         userService.logout();
         modelMap.addAttribute("template","account/login");
-        return "indexSimple";
+        return "redirect:indexSimple";
     }
     /**
      * 127.0.0.1/account/register ---- get
