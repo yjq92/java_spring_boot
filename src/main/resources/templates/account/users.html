@@ -65,7 +65,6 @@
 <div th:replace="account/userEdit"></div>
 
 <!-- import js-->
-<script src="/plugin/bootbox/bootbox.js"></script>
 <!-- FastClick -->
 <script src="/plugin/fastclick/lib/fastclick.js"></script>
 <!-- NProgress -->
@@ -87,7 +86,7 @@
 <script src="/plugin/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
 
 <script type="text/javascript">
-    //var DEFAULT_PAGE_SIZE=5;
+    var DEFAULT_PAGE_SIZE=5;
     $(document).ready(function() {
         initUserTable(DEFAULT_PAGE_SIZE);
         $("#addUserBtn").bind("click", function () {
